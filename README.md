@@ -1,7 +1,7 @@
 Griddable
 =========
 
-Non-intrusive (but opinionated) responsive SASS grids.
+Non-intrusive (but opinionated) responsive Sass grids.
 
 
 
