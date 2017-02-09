@@ -1,0 +1,53 @@
+@mixin griddable($cols, $gutter, $width) {
+  @include griddable-container($width);
+  // @TODO make this class name customizable
+  &-r {
+    @include griddable-row($gutter);
+  }
+  // @TODO make this class name customizable
+  &-c {
+    @include griddable-col($cols, $gutter, $cols);
+    @include gridabble-col-spans($cols, $gutter);
+    // @TODO what about lists?
+    @if type-of($width) == map {
+      @each $s, $w in $width {
+        @media screen and (min-width: $w) {
+          @include gridabble-col-spans($cols, $gutter, ("_" + $s));
+        }
+      }
+    }
+
+    // @TODO how to put this in a mixin? do we need to?
+    margin: #{$gutter / 2};
+    flex: 0 0 auto;
+  }
+}
+
+@mixin griddable-container($width) {
+  @if type-of($width) == map {
+    $width: map-values($width);
+  }
+  @if type-of($width) == list {
+    $width: nth($width, -1);
+  }
+  margin: 0 auto;
+  max-width: $width;
+}
+
+@mixin griddable-row($gutter) {
+  margin: 0 #{$gutter / -2};
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@mixin gridabble-col-spans($cols, $gutter, $prefix: "_") {
+  @include griddable-col($cols, $gutter, $cols);
+  @for $span from 1 through $cols {
+    &.#{"" + $prefix + $span} { @include griddable-col($cols, $gutter, $span) }
+  }
+}
+
+@mixin griddable-col($cols, $gutter, $span: 1) {
+  @if unitless($gutter) { $gutter: 0px }
+  width: calc(#{100% / $cols * $span} - #{$gutter});
+}
